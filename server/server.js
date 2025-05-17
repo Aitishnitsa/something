@@ -8,15 +8,13 @@ import { dirname } from 'path';
 const { Pool } = pkg;
 dotenv.config();
 
-const app = express();
-app.set('trust proxy', true);
-app.use(express.json());
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+const app = express();
+app.set('trust proxy', true);
+app.use(express.json());
 app.use(express.static(path.join(__dirname, '../public')));
-
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
