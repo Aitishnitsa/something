@@ -28,8 +28,8 @@ CREATE TABLE IF NOT EXISTS stats (
   user_agent TEXT,
   url TEXT,
   navigation_start BIGINT,
-  dom_content_loaded INT,
-  load_time INT,
+  dom_content_loaded BIGINT,
+  load_time BIGINT,
   created_at TIMESTAMP DEFAULT NOW()
 );
 `;
