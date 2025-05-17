@@ -92,23 +92,33 @@
 
   <script>
     window.addEventListener('load', () => {
-      const timing = performance.timing;
-      const data = {
-        navigationStart: timing.navigationStart,
-        domContentLoaded: timing.domContentLoadedEventEnd - timing.navigationStart,
-        loadTime: timing.loadEventEnd - timing.navigationStart,
-        userAgent: navigator.userAgent,
-        url: window.location.href
-      };
+        const timing = performance.timing;
+        const data = {
+          navigationStart: timing.navigationStart,
+          domContentLoaded: timing.domContentLoadedEventEnd - timing.navigationStart,
+          loadTime: timing.loadEventEnd - timing.navigationStart,
+          userAgent: navigator.userAgent,
+          url: window.location.href
+        };
 
-      fetch('/stats', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
+        fetch('/stats', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        })
+          .then(response => {
+            if (response.ok) {
+              console.log('Data sent successfully');
+            } else {
+              console.error('Failed to send data');
+            }
+          })
+          .catch(error => {
+            console.error('Error sending data:', error);
+          });
       });
-    });
   </script>
 </body>
 

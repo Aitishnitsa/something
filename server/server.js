@@ -27,9 +27,9 @@ CREATE TABLE IF NOT EXISTS stats (
   ip TEXT,
   user_agent TEXT,
   url TEXT,
-  navigation_start BIGINT,
-  dom_content_loaded BIGINT,
-  load_time BIGINT,
+  navigation_start TIMESTAMP,
+  dom_content_loaded TIMESTAMP,
+  load_time TIMESTAMP,
   created_at TIMESTAMP DEFAULT NOW()
 );
 `;
@@ -45,10 +45,14 @@ app.post('/stats', async (req, res) => {
     const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket.remoteAddress;
     const { userAgent, url, navigationStart, domContentLoaded, loadTime } = req.body;
 
+    const navigationStartDate = new Date(navigationStart).toISOString();
+    const domContentLoadedDate = new Date(domContentLoaded).toISOString();
+    const loadTimeDate = new Date(loadTime).toISOString();
+
     await pool.query(
       `INSERT INTO stats (ip, user_agent, url, navigation_start, dom_content_loaded, load_time)
        VALUES ($1, $2, $3, $4, $5, $6)`,
-      [ip, userAgent, url, navigationStart, domContentLoaded, loadTime]
+      [ip, userAgent, url, navigationStartDate, domContentLoadedDate, loadTimeDate]
     );
 
     res.status(204).send();
