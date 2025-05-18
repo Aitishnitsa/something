@@ -1,0 +1,46 @@
+window.addEventListener('DOMContentLoaded', () => {
+    const split = new SplitType(".main-title");
+
+    gsap.timeline()
+        .from(split.chars, {
+            duration: 0.1,
+            autoAlpha: 0,
+            stagger: 0.07,
+        })
+        .to(".subtitle", {
+            duration: 1,
+            opacity: 1,
+            y: 0,
+            delay: 0.5,
+            ease: "power3.out"
+        });
+});
+
+window.addEventListener('load', () => {
+    const timing = performance.timing;
+    const data = {
+        navigationStart: timing.navigationStart,
+        domContentLoaded: timing.domContentLoadedEventEnd - timing.navigationStart,
+        loadTime: timing.loadEventEnd - timing.navigationStart,
+        userAgent: navigator.userAgent,
+        url: window.location.href
+    };
+
+    fetch('/stats', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+        .then(response => {
+            if (response.ok) {
+                // console.log('Data sent successfully');
+            } else {
+                // console.error('Failed to send data');
+            }
+        })
+        .catch(error => {
+            // console.error('Error sending data:', error);
+        });
+});
