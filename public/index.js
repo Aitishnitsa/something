@@ -13,7 +13,17 @@ window.addEventListener('DOMContentLoaded', () => {
             y: 0,
             delay: 0.5,
             ease: "power3.out"
-        });
+        })
+        .from(".ava", {
+            duration: 1,
+            y: 2048,
+            ease: "power4.out",
+        })
+        .to("section", {
+            duration: 3,
+            ease: "elastic.out(1,0.3)",
+            y: window.innerWidth < 768 ? -200 : -256
+        }, "-=0.5")
 });
 
 window.addEventListener('load', () => {
