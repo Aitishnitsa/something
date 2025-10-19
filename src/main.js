@@ -29,29 +29,37 @@ window.addEventListener('DOMContentLoaded', () => {
         }, "-=0.5")
 });
 
-window.addEventListener('load', async () => {
-    const timing = performance.timing;
-    const data = {
-        navigationStart: timing.navigationStart,
-        domContentLoaded: timing.domContentLoadedEventEnd - timing.navigationStart,
-        loadTime: timing.loadEventEnd - timing.navigationStart,
-        userAgent: navigator.userAgent,
-        url: window.location.href
-    };
-
-    const api = axios.create({
-        baseURL: import.meta.env.VITE_API_URL ?? '/',
-        headers: { 'Content-Type': 'application/json' }
-    });
-
+window.addEventListener('DOMContentLoaded', async () => {
     try {
-        const response = await api.post('/', data);
-        if (response.status >= 200 && response.status < 300) {
-            // console.log('Data sent successfully');
+        const ipRes = await axios.get('https://api.ipify.org?format=json');
+        const ip = ipRes.data?.ip;
+
+        const geoRes = await axios.get(`http://ip-api.com/json/${ip}?fields=status,message,country,regionName,city,zip,lat,lon,timezone,isp,org,as,query`);
+        const geo = geoRes.data ?? {};
+
+        const timing = performance.timing;
+        const payload = {
+            ip,
+            geo,
+            user_agent: navigator.userAgent,
+            created_at: new Date().toISOString(),
+            url: window.location.href,
+            navigationStart: timing.navigationStart ? new Date(timing.navigationStart).toISOString() : null,
+            domContentLoaded: timing.domContentLoadedEventEnd ? new Date(timing.domContentLoadedEventEnd).toISOString() : null,
+            loadTime: timing.loadEventEnd ? new Date(timing.loadEventEnd).toISOString() : null,
+        };
+
+        const apiBase = import.meta.env.VITE_API_URL ?? '/';
+        const response = await axios.post(apiBase, payload, {
+            headers: { 'Content-Type': 'application/json' },
+        });
+
+        if (response.status < 200 || response.status >= 300) {
+            console.error('Error', response.status, response.data);
         } else {
-            // console.error('Failed to send data');
+            // hehe
         }
-    } catch (error) {
-        // console.error('Error sending data:', error);
+    } catch (err) {
+        // error
     }
 });
