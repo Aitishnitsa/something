@@ -34,7 +34,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         const ipRes = await axios.get('https://api.ipify.org?format=json');
         const ip = ipRes.data?.ip;
 
-        const geoRes = await axios.get(`http://ip-api.com/json/${ip}?fields=status,message,country,regionName,city,zip,lat,lon,timezone,isp,org,as,query`);
+        const geoRes = await axios.get(`https://ipwho.is/${ip}`);
         const geo = geoRes.data ?? {};
 
         const timing = performance.timing;
