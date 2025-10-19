@@ -1,3 +1,6 @@
+import './style.css'
+import axios from "axios";
+
 window.addEventListener('DOMContentLoaded', () => {
     const split = new SplitType(".main-title");
 
@@ -26,7 +29,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }, "-=0.5")
 });
 
-window.addEventListener('load', () => {
+window.addEventListener('load', async () => {
     const timing = performance.timing;
     const data = {
         navigationStart: timing.navigationStart,
@@ -36,21 +39,19 @@ window.addEventListener('load', () => {
         url: window.location.href
     };
 
-    fetch('/stats', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    })
-        .then(response => {
-            if (response.ok) {
-                // console.log('Data sent successfully');
-            } else {
-                // console.error('Failed to send data');
-            }
-        })
-        .catch(error => {
-            // console.error('Error sending data:', error);
-        });
+    const api = axios.create({
+        baseURL: import.meta.env.VITE_API_URL,
+        headers: { 'Content-Type': 'application/json' }
+    });
+
+    try {
+        const response = await api.post('/', data);
+        if (response.status >= 200 && response.status < 300) {
+            // console.log('Data sent successfully');
+        } else {
+            // console.error('Failed to send data');
+        }
+    } catch (error) {
+        // console.error('Error sending data:', error);
+    }
 });
