@@ -1,3 +1,5 @@
+import axios from "axios";
+
 window.addEventListener('DOMContentLoaded', () => {
     const split = new SplitType(".main-title");
 
