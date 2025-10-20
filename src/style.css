@@ -1,5 +1,6 @@
 :root {
-  font-family: system-ui, 'Montserrat', Arial, sans-serif;
+  --color-accent: #b9dd14;
+  font-family: 'Montserrat', Arial, sans-serif;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -13,6 +14,11 @@
   padding: 0;
 }
 
+::selection {
+  color: #222222;
+  background-color: var(--color-accent);
+}
+
 body {
   background: linear-gradient(135deg, #222222 0%, #444444 100%);
   min-height: 100vh;
@@ -21,6 +27,19 @@ body {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+}
+
+.flair {
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  mix-blend-mode: difference;
+  pointer-events: none;
 }
 
 section {
@@ -43,7 +62,7 @@ section {
 }
 
 .subtitle {
-  color: #b9dd14;
+  color: var(--color-accent);
   font-size: 1.5rem;
   border-radius: 4rem;
   opacity: 0;
@@ -51,10 +70,17 @@ section {
 
 .ava {
   position: absolute;
-  bottom: 0;
+  bottom: -2048px;
   z-index: -100;
   width: 32em;
+  height: fit-content;
   overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .flair {
+    display: none;
+  }
 }
 
 @media (max-width: 600px) {
@@ -75,10 +101,6 @@ section {
   }
 
   .ava {
-    position: absolute;
-    bottom: 0;
-    z-index: -100;
     width: 95%;
-    overflow: hidden;
   }
 }

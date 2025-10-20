@@ -3,6 +3,18 @@ import axios from "axios";
 window.addEventListener('DOMContentLoaded', () => {
     const split = new SplitType(".main-title");
 
+    if (window.innerWidth > 768) {
+        gsap.set(".flair", {xPercent: -50, yPercent: -50});
+
+        let xTo = gsap.quickTo(".flair", "x", {duration: 0.6, ease: "power3"}),
+            yTo = gsap.quickTo(".flair", "y", {duration: 0.6, ease: "power3"});
+
+        window.addEventListener("mousemove", e => {
+            xTo(e.clientX);
+            yTo(e.clientY);
+        });
+    }
+
     gsap.timeline()
         .from(split.chars, {
             duration: 0.1,
@@ -16,9 +28,9 @@ window.addEventListener('DOMContentLoaded', () => {
             delay: 0.5,
             ease: "power3.out"
         })
-        .from(".ava", {
+        .to(".ava", {
             duration: 1,
-            y: 2048,
+            bottom: 0,
             ease: "power4.out",
         })
         .to("section", {
@@ -28,15 +40,34 @@ window.addEventListener('DOMContentLoaded', () => {
         }, "-=0.5")
 });
 
+document.addEventListener('mousemove', e => {
+    const offsetX = (e.clientX / window.innerWidth - 0.5) * 40;
+    const offsetY = (e.clientY / window.innerHeight - 0.5) * 40;
+    gsap.to('.ava-eyes', { x: offsetX, y: offsetY, duration: 0.6, ease: 'power3.out' });
+});
+
+
 window.addEventListener('DOMContentLoaded', async () => {
     try {
-        const ipRes = await axios.get('https://api.ipify.org?format=json');
-        const ip = ipRes.data?.ip;
+        let ip = "";
+        try {
+            const ipRes = await axios.get('https://api.ipify.org?format=json', { timeout: 5000 });
+            ip = ipRes?.data?.ip ?? null;
+        } catch (err) {
+            console.warn('Failed to fetch IP:', err);
+        }
 
-        const geoRes = await axios.get(`https://ipwho.is/${ip}`);
-        const geo = geoRes.data ?? {};
+        let geo = {};
+        if (ip !== "") {
+            try {
+                const geoRes = await axios.get(`https://ipwho.is/${ip}`, { timeout: 5000 });
+                geo = geoRes?.data ?? {};
+            } catch (err) {
+                console.warn('Failed to fetch geo:', err);
+            }
+        }
 
-        const timing = performance.timing;
+        const timing = (typeof performance !== 'undefined' && performance.timing) ? performance.timing : {};
         const payload = {
             ip,
             geo,
